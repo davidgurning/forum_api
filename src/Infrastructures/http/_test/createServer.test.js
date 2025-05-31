@@ -1,8 +1,20 @@
 // Import fungsi createServer dari file createServer.js yang bertugas untuk membuat instance server HTTP
+const pool = require("../../database/postgres/pool");
+const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
+const AuthenticationsTableTestHelper = require("../../../../tests/AuthenticationsTableTestHelper");
+const injections = require("../../injections");
 const createServer = require("../createServer");
 
 // Describe adalah fungsi dari Jest yang digunakan untuk mengelompokkan beberapa test case
 describe("HTTP server", () => {
+  afterAll(async () => {
+    await pool.end();
+  });
+
+  afterEach(async () => {
+    await UsersTableTestHelper.cleanTable();
+    await AuthenticationsTableTestHelper.cleanTable();
+  });
   // Test case pertama: Menguji apakah server merespon dengan status 404 untuk route yang tidak terdaftar
   it("should response 404 when request unregistered route", async () => {
     // Arrange: Persiapkan server dengan memanggil createServer,
@@ -19,6 +31,22 @@ describe("HTTP server", () => {
     // Assert: Memastikan bahwa response dari server memiliki status code 404 (Not Found)
     // Ini menunjukkan server mengenali bahwa route tersebut tidak ada
     expect(response.statusCode).toEqual(404);
+  });
+
+  describe("when GET /", () => {
+    it("should return 200 and hello world", async () => {
+      // Arrange
+      const server = await createServer({});
+      // Action
+      const response = await server.inject({
+        method: "GET",
+        url: "/",
+      });
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.value).toEqual("Hello world!");
+    });
   });
 
   // Test case kedua: Menguji bagaimana server menangani error internal (server error)
