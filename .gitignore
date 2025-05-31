@@ -1,4 +1,11 @@
 node_modules
+package-lock.json
+.idea
+config/database/test.json
+.env
+*.pem
+
+node_modules
 coverage
 .env
 forum-api-webserver.pem
