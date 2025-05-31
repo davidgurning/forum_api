@@ -75,6 +75,14 @@ const createServer = async (container) => {
     },
   ]);
 
+  server.route({
+    method: "GET",
+    path: "/",
+    handler: () => ({
+      value: "Hello world!",
+    }),
+  });
+
   // Menambahkan extension point onPreResponse untuk intercept response sebelum dikirim ke client
   server.ext("onPreResponse", (request, h) => {
     // Mendapatkan objek response dari request (bisa response biasa atau error)

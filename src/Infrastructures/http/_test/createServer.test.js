@@ -1,20 +1,8 @@
 // Import fungsi createServer dari file createServer.js yang bertugas untuk membuat instance server HTTP
-const pool = require("../../database/postgres/pool");
-const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
-const AuthenticationsTableTestHelper = require("../../../../tests/AuthenticationsTableTestHelper");
-const injections = require("../../injections");
 const createServer = require("../createServer");
 
 // Describe adalah fungsi dari Jest yang digunakan untuk mengelompokkan beberapa test case
 describe("HTTP server", () => {
-  afterAll(async () => {
-    await pool.end();
-  });
-
-  afterEach(async () => {
-    await UsersTableTestHelper.cleanTable();
-    await AuthenticationsTableTestHelper.cleanTable();
-  });
   // Test case pertama: Menguji apakah server merespon dengan status 404 untuk route yang tidak terdaftar
   it("should response 404 when request unregistered route", async () => {
     // Arrange: Persiapkan server dengan memanggil createServer,
